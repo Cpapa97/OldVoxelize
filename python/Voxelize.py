@@ -1,18 +1,12 @@
 import numpy as np
 
-import datajoint as dj
-from tqdm import tqdm
-import pandas as pd
-import time
+import pandas as pd # Might want this for pd.unique() at some point? Or for other uses, like the DataFrame for the voxels and to_dict replacement?
 
+# Might want the plotting capabilities to be a separate import-able or enable-able module
+# in case matplotlib or ipyvolume are not installed or in a jupyter notebook
 import matplotlib.pyplot as plt
+# Also should ensure that the plotting is not specific to a certain set of units (the divide by 1000 to go from nm to um)
 import ipyvolume.pylab as p3
-
-ta3p100 = dj.create_virtual_module('ta3p100', 'microns_ta3p100')
-
-fetched_mesh = (ta3p100.Mesh & ta3p100.CurrentSegmentation & 'segment_id=648518346341366885').fetch1()
-# fetched_mesh = (ta3p100.Decimation35 & ta3p100.CurrentSegmentation & 'segment_id=648518346341366885').fetch1()
-
 class Voxels:
     def __init__(self, origin, side_length, offsets, per_voxel_vertices=None):
         self.origin = origin
