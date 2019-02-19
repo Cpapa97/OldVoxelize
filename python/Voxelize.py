@@ -78,7 +78,7 @@ class Voxels:
         p3.show()
     
     def search_by_offset(self, key):
-        return np.where((self.offset_vectors==key).all(axis=1))[0]
+        return np.where((self.offsets==key).all(axis=1))[0]
     
     def to_dict(self, include_origin=True, include_side_length=True, include_offsets=True, include_per_voxel_vertices=False):
         record = dict()
