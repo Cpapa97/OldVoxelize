@@ -203,10 +203,3 @@ class VoxelMesh:
 
         offset_vectors = np.array(offset_vectors)
         self.voxels = Voxels(self.bbox[:,0], side_length, offset_vectors, voxel_vertices)
-
-mesh = VoxelMesh(fetched_mesh['vertices'], fetched_mesh['triangles'])
-
-mesh.voxelize(5000)
-print(len(mesh.voxels))
-
-mesh.plot(color='blue')
