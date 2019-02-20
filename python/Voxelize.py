@@ -83,7 +83,7 @@ class Voxels:
         return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
     
     # Need to be able to also plot the center of mass of the vertices within each voxel as an option instead of the centroids.
-    def plot(self, width=800, height=600, voxel_count_offset=0, voxel_limit=None, use_centroids_instead=False, ipyvol_fig=None, scaling=1 **kwargs):
+    def plot(self, width=800, height=600, voxel_count_offset=0, voxel_limit=None, use_centroids_instead=False, ipyvol_fig=None, scaling=1, **kwargs):
         """
         This method needs better documentation.
 
