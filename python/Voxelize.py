@@ -202,6 +202,13 @@ class VoxelMesh:
         return self.vertices[self.triangles]
 
     @property
+    def center_of_triangles(self):
+        """
+        Returns the centroids of the triangles, can potentially be used as a replacement or addition to the vertices to alter the voxelization depending on how large the triangles are and how spaced out the vertices are.
+        """
+        return self.vertices[self.triangles].mean(axis=1)
+
+    @property
     def sorted_vertices(self):
         """
         Not actually used for any part of the voxelization, too slow. Here for potential usage, but it sorts the vertices by first column, then second, then third while preserving the row value assignments.
