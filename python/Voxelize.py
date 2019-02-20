@@ -29,6 +29,29 @@ class Voxels:
         self.per_voxel_vertices = per_voxel_vertices
 
     @property
+    def adjacency(self):
+        """
+        Returns the face-face adjacency matrix of the voxels (based on the offset array). As of right now it only fills the upper triangle
+        """
+        pairwise_differences = list()
+        for i, offset in enumerate(self.offsets):
+            pairwise_differences.append(self.offsets - offset)
+        pairwise_differences = np.array(pairwise_differences)
+
+        voxel_adj = np.zeros((self.offsets.shape[0],)*2, np.uint8)
+        for i, diff in enumerate(pairwise_differences.astype(bool).sum(axis=2)):
+            mask_a = diff == 1
+            mask_b = pairwise_differences[i].sum(axis=1) == 1
+            adjacent_voxels = np.where(mask_a & mask_b)
+            voxel_adj[i][adjacent_voxels] = 1
+
+        # Currently the adjacency matrix only has the upper triangular portion filled in, this is a quick step to mirror it to the lower triangular.
+        triu_adj = np.triu(voxel_adj)
+        voxel_adj = triu_adj + triu_adj.T
+
+        return voxel_adj
+
+    @property
     def bboxes(self):
         """
         Conversion of the voxel offset structure to their real-world cube bounding boxes.
