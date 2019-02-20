@@ -122,9 +122,10 @@ class Voxels:
             record.update(dict(per_voxel_vertices=self.per_voxel_vertices))
         return record
     
+    # Maybe shouldn't override since it's just for offsets
     def __len__(self):
         return len(self.offsets)
-
+    
 # I should additionally add a flag to exclude isolated vertices from voxelization, which will also require the triangles.
 class VoxelMesh:
     def __init__(self, vertices, triangles=None, voxels=None, segment_id=None, exclude_isolated_vertices=False):
