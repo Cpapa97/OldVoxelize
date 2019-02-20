@@ -105,7 +105,14 @@ class Voxels:
                     n_voxels_to_plot = len(self)
 
         if use_centroids_instead: # I should be careful about forcing the voxels to be divided by 1000 if this is a generalized package
-            p3.scatter(self.centroids[voxel_count_offset:n_voxels_to_plot].T/1000, **kwargs)
+            # Default values to send into scatter
+            if 'marker' not in kwargs:
+                kwargs['marker'] = 'sphere'
+            if 'color' not in kwargs:
+                kwargs['color'] = 'blue'
+            if 'size' not in kwargs:
+                kwargs['size'] = 0.5
+            p3.scatter(*self.centroids[voxel_count_offset:n_voxels_to_plot].T/1000, **kwargs)
         else:
             drawable_bboxes = self.drawable_bboxes[voxel_count_offset:n_voxels_to_plot]
             for drawable_bbox in drawable_bboxes:
