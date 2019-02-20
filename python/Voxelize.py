@@ -273,6 +273,7 @@ class VoxelMesh:
                     p3.squarelim()
                     p3.show()
         elif plot_voxels:
+            try:
                 fig = p3.figure(width=width, height=height)
                 self.voxels.plot(width=width, height=height,
                                  voxel_count_offset=voxel_count_offset,
@@ -281,7 +282,9 @@ class VoxelMesh:
                                  ipyvol_fig=fig,
                                 scaling=scaling,
                                 **kwargs)
-                                
+            except AttributeError:
+                raise AttributeError("This object does not have a Voxels object, you must initialize the voxel mesh with a Voxels object or run voxelize() to generate new voxels.")
+    
     def voxelize(self, side_length):
         def apply_split(vertices, edges, sort_axis):
             """
