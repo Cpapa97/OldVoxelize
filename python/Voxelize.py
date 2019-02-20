@@ -11,6 +11,7 @@ import ipyvolume.pylab as p3
 # Should also allow the vertices to be accessed per voxel by an np.where set intersection thingy.
 # It's more expensive than returning it through the voxelization method that already does it, but it's still useful to have since I likely won't be storing that data in the database.
 
+# Needs to also be able to add and manipulate the existing offsets, though in a less direct way (through a convenient and secure API).
 # Should also implement single/many or an amount determinable by the client for voxel accessing of centroids and bboxes.
 class Voxels:
     def __init__(self, origin, side_length, offsets, per_voxel_vertices=None):
@@ -41,8 +42,22 @@ class Voxels:
         """
         Centroid coordinates of the bounding boxes of the cube voxels.
         """
-        return self.bboxes.mean(axis=0)
+        return self.bboxes.mean(axis=2)
     
+    @property
+    def com(self):
+        """
+        Centroid or center of mass (com) for entire voxel structure.
+        """
+        return self.centroids.mean(axis=0)
+
+    @property
+    def vertex_centroids(self):
+        """
+        Center of mass of the vertices per voxel. This version requires per_voxel_vertices to be defined and filled.
+        """
+        return np.array([vertex_block.mean(axis=0) for vertex_block in self.per_voxel_vertices.values()])
+
     @property
     def volume(self):
         """
