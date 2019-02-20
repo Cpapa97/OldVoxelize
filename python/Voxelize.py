@@ -83,7 +83,7 @@ class Voxels:
         return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
     
     # Need to be able to also plot the center of mass of the vertices within each voxel as an option instead of the centroids.
-    def plot(self, width=800, height=600, voxel_count_offset=0, voxel_limit=None, use_centroids_instead=False, ipyvol_fig=None, **kwargs):
+    def plot(self, width=800, height=600, voxel_count_offset=0, voxel_limit=None, use_centroids_instead=False, ipyvol_fig=None, scaling=1 **kwargs):
         """
         This method needs better documentation.
 
@@ -105,19 +105,18 @@ class Voxels:
                 if n_voxels_to_plot > voxels_length:
                     n_voxels_to_plot = len(self)
 
-        if use_centroids_instead: # I should be careful about forcing the voxels to be divided by 1000 if this is a generalized package
-            # Default values to send into scatter
+        if use_centroids_instead:
             if 'marker' not in kwargs:
                 kwargs['marker'] = 'sphere'
             if 'color' not in kwargs:
                 kwargs['color'] = 'blue'
             if 'size' not in kwargs:
                 kwargs['size'] = 0.5
-            p3.scatter(*self.centroids[voxel_count_offset:n_voxels_to_plot].T/1000, **kwargs)
+            p3.scatter(*self.centroids[voxel_count_offset:n_voxels_to_plot].T*scaling, **kwargs)
         else:
             drawable_bboxes = self.drawable_bboxes[voxel_count_offset:n_voxels_to_plot]
             for drawable_bbox in drawable_bboxes:
-                p3.plot(*drawable_bbox/1000, **kwargs)
+                p3.plot(*drawable_bbox*scaling, **kwargs)
         p3.squarelim()
         p3.show()
     
@@ -237,7 +236,7 @@ class VoxelMesh:
         return np.array([(np.min(axis), np.max(axis)) for axis in vertices.T])
 
     def plot(self, plot_mesh=True, plot_voxels=True, width=800, height=600, voxel_count_offset=0,
-             voxel_limit=None, use_centroids_instead=False, mesh_color='red', **kwargs):
+             voxel_limit=None, use_centroids_instead=False, scaling=1, mesh_color='red', **kwargs):
         """
         This method needs better documentation.
 
@@ -249,22 +248,26 @@ class VoxelMesh:
                 raise ValueError("There is no face/triangle data stored for this mesh!")
             else:
                 fig = p3.figure(width=width, height=height)
-                p3.plot_trisurf(*self.vertices.T/1000, self.triangles, color=mesh_color)
+                p3.plot_trisurf(*self.vertices.T*scaling, self.triangles, color=mesh_color)
                 if plot_voxels:
                     self.voxels.plot(width=width, height=height,
                                      voxel_count_offset=voxel_count_offset,
                                      voxel_limit=voxel_limit,
                                      use_centroids_instead=use_centroids_instead,
                                      ipyvol_fig=fig,
+                                     scaling=scaling,
                                      **kwargs)
                 else:
                     p3.squarelim()
                     p3.show()
         elif plot_voxels:
+            fig = p3.figure(width=width, height=height)
             self.voxels.plot(width=width, height=height,
                              voxel_count_offset=voxel_count_offset,
                              voxel_limit=voxel_limit,
                              use_centroids_instead=use_centroids_instead,
+                             ipyvol_fig=fig,
+                             scaling=scaling,
                              **kwargs)
     
     def voxelize(self, side_length):
