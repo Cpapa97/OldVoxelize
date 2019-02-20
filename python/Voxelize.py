@@ -54,7 +54,7 @@ class Voxels:
     @property
     def vertex_centroids(self):
         """
-        Center of mass of the vertices per voxel. This version requires per_voxel_vertices to be defined and filled.
+        Center of mass of the vertices per voxel. This version requires per_voxel_vertices to be defined and filled. Maybe this is better called the center of gravity? But it really is a center of actual mass.
         """
         return np.array([vertex_block.mean(axis=0) for vertex_block in self.per_voxel_vertices.values()])
 
@@ -82,6 +82,7 @@ class Voxels:
         """
         return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
     
+    # Need to be able to also plot the center of mass of the vertices within each voxel as an option instead of the centroids.
     def plot(self, width=800, height=600, voxel_count_offset=0, voxel_limit=None, use_centroids_instead=False, ipyvol_fig=None, **kwargs):
         """
         This method needs better documentation.
