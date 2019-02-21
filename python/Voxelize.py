@@ -13,6 +13,9 @@ import ipyvolume.pylab as p3
 
 # Needs to also be able to add and manipulate the existing offsets, though in a less direct way (through a convenient and secure API).
 # Should also implement single/many or an amount determinable by the client for voxel accessing of centroids and bboxes.
+
+# I need to implement something where I can query for a voxel, then get its real-coordinate bounding box
+# by passing the voxel index or the offset vectors themselves into a function. (Likely have both options).
 class Voxels:
     def __init__(self, origin, side_length, offsets, per_voxel_vertices=None):
         """
@@ -29,27 +32,31 @@ class Voxels:
         self.per_voxel_vertices = per_voxel_vertices
 
     @property
+    def adjacency_masks(self):
+        """
+        Generates masks that are used in most of the adjacency/neighborhood generators.
+        """
+        pairwise_differences = np.array([offset - self.offsets for offset in self.offsets])
+        return np.abs(pairwise_differences).sum(axis=2) == 1
+
+    @property
     def adjacency(self):
         """
         Returns the face-face adjacency matrix of the voxels (based on the offset array). As of right now it only fills the upper triangle
         """
-        pairwise_differences = list()
-        for i, offset in enumerate(self.offsets):
-            pairwise_differences.append(self.offsets - offset)
-        pairwise_differences = np.array(pairwise_differences)
-
         voxel_adj = np.zeros((self.offsets.shape[0],)*2, np.uint8)
-        for i, diff in enumerate(pairwise_differences.astype(bool).sum(axis=2)):
-            mask_a = diff == 1
-            mask_b = pairwise_differences[i].sum(axis=1) == 1
-            adjacent_voxels = np.where(mask_a & mask_b)
-            voxel_adj[i][adjacent_voxels] = 1
-
-        # Currently the adjacency matrix only has the upper triangular portion filled in, this is a quick step to mirror it to the lower triangular.
-        triu_adj = np.triu(voxel_adj)
-        voxel_adj = triu_adj + triu_adj.T
-
+        for i, mask in enumerate(self.adjacency_masks):
+            voxel_adj[i][np.where(mask)] = 1
         return voxel_adj
+
+    @property
+    def voxel_neighborhood(self):
+        return {tuple(self.offsets[i]): self.offsets[mask] for i, mask in enumerate(self.adjacency_masks)}
+    
+    # Might want a version that returns it as an ndarray?
+    @property
+    def voxel_idx_neighborhood(self):
+        return {i: np.where(mask)[0] for i, mask in enumerate(self.adjacency_masks)}
 
     @property
     def bboxes(self):
@@ -225,7 +232,7 @@ class VoxelMesh:
     @property
     def nonisolated_vertices(self):
         """
-        Uses the triangle data to remove isolated vertices. Does not preserve or fix triangle indices. Might be implemented later, it can take a few seconds to compute.
+        Uses the triangle data to remove isolated vertices. Does not preserve or fix triangle indices. That might be implemented later, it can take a few seconds to compute.
         """
         return self.vertices[self.triangles]
 
