@@ -47,6 +47,13 @@ class Voxels:
         return self.adjacency_masks.astype(np.uint8)
 
     @property
+    def edges(self):
+        """
+        Convenience method to computes the edges of the adjacency matrix (recomputes the adjacency matrix). This is a wrapper around get_edges() so it is preferable to use the method instead due to the property recomputing the adjacency matrix each time.
+        """
+        return self.get_edges(self.adjacency)
+
+    @property
     def neighborhood(self):
         """
         Generates the voxel neighborhood as a dictionary with the offset as a key and the neighboring offsets as its values.
@@ -114,6 +121,13 @@ class Voxels:
         Voxel bounding boxes as line plottable arrays.
         """
         return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
+    
+    @staticmethod
+    def get_edges(adjacency_array):
+        """
+        Returns the edge connections of an argument adjacency matrix.
+        """
+        return np.array(np.where(np.triu(adjacency_array))).T
 
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
