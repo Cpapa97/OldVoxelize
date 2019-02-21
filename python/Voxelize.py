@@ -50,12 +50,18 @@ class Voxels:
         return voxel_adj
 
     @property
-    def voxel_neighborhood(self):
+    def neighborhood(self):
+        """
+        Generates the voxel neighborhood as a dictionary with the offset as a key and the neighboring offsets as its values.
+        """
         return {tuple(self.offsets[i]): self.offsets[mask] for i, mask in enumerate(self.adjacency_masks)}
     
     # Might want a version that returns it as an ndarray?
     @property
-    def voxel_idx_neighborhood(self):
+    def idx_neighborhood(self):
+        """
+        Generates the voxel neighborhood as a dictionary with the voxel index as a key and the neighboring voxel indexes as its values.
+        """
         return {i: np.where(mask)[0] for i, mask in enumerate(self.adjacency_masks)}
 
     @property
