@@ -44,10 +44,7 @@ class Voxels:
         """
         Returns the face-face adjacency matrix of the voxels (based on the offset array). As of right now it only fills the upper triangle
         """
-        voxel_adj = np.zeros((self.offsets.shape[0],)*2, np.uint8)
-        for i, mask in enumerate(self.adjacency_masks):
-            voxel_adj[i][np.where(mask)] = 1
-        return voxel_adj
+        return self.adjacency_masks.astype(np.uint8)
 
     @property
     def neighborhood(self):
@@ -117,7 +114,7 @@ class Voxels:
         Voxel bounding boxes as line plottable arrays.
         """
         return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
-    
+
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
 
