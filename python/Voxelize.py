@@ -98,6 +98,12 @@ class Voxels:
         """
         return np.array([vertex_block.mean(axis=0) for vertex_block in self.per_voxel_vertices.values()])
 
+    # Important Thresholding Idea for the Voxelization:
+    # - I could threshold and remove the outer voxels that have the bbox of their vertices only present
+    #  in less than a certain percentage of the voxel volume! This would allow axons to not be thresholded
+    #  out if they run through a majority of the voxel (though there does come a problem if an axon runs through
+    #  the border between two voxels. Doing this type of thresholding might require the additional support of corner
+    #  adjacency (if certain connecting voxels get removed, which could still be a problem in certain cases even without thresholding).
     @property
     def volume(self):
         """
