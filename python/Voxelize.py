@@ -260,6 +260,7 @@ class VoxelMesh:
         """
         return self.vertices[self.triangles].mean(axis=1)
 
+    # Would np.array(np.where(mesh.vertices)).T potentially give me the sorted vertices, and faster?
     @property
     def sorted_vertices(self):
         """
