@@ -169,7 +169,7 @@ class Voxels:
         raise NotImplementedError
 
     @property
-    def _rectangular_idx(self):
+    def _drawable_idx(self):
         """
         Used to convert a voxel bounding box to a line plottable feature in ipyvolume.
         """
@@ -183,7 +183,7 @@ class Voxels:
         """
         Voxel bounding boxes as line plottable arrays.
         """
-        return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
+        return self.bboxes[:, np.arange(3), self._drawable_idx.T].transpose(0, 2, 1)
 
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
