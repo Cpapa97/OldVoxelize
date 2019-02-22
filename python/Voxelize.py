@@ -55,6 +55,9 @@ class Voxels:
         """
         return self.adjacency_masks.astype(np.uint8)
 
+    # Or I can just avoid having this as a property at all. That seems like a better idea, because otherwise if multiple steps are rerun at different
+    # times then the data integrity might not hold up.
+
     # Because this stuff has to rerun everything, maybe I should turn all of these into functions that also store these things as private variables?
     # Would speed up re-use and keep the data integrity.
     @property
