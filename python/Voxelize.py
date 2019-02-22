@@ -138,23 +138,6 @@ class Voxels:
     # In that case it might be helpful to use the bounding box of the vertices (if I'm unable to use the vertex centers of mass per voxel).
     # Once the mesh is watertight and manifold, I should be able to do another quick passthrough to remove internal faces (like if there are pockets of air
     # inside the mesh caused by 2 layers of faces).
-
-    @property
-    def _rectangular_idx(self):
-        """
-        Used to convert a voxel bounding box to a line plottable feature in ipyvolume.
-        """
-        X = [0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
-        Y = [0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0]
-        Z = [0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0]
-        return np.vstack((X, Y, Z))
-    
-    @property
-    def drawable_bboxes(self):
-        """
-        Voxel bounding boxes as line plottable arrays.
-        """
-        return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
     
     def vbbox(self, offset):
         voxel_min = self.origin + (offset * self.side_length)
@@ -184,6 +167,23 @@ class Voxels:
         Returns the real-world vectors of the edges. Though should it be center to center? Yeah probably.
         """
         raise NotImplementedError
+
+    @property
+    def _rectangular_idx(self):
+        """
+        Used to convert a voxel bounding box to a line plottable feature in ipyvolume.
+        """
+        X = [0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+        Y = [0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0]
+        Z = [0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0]
+        return np.vstack((X, Y, Z))
+    
+    @property
+    def drawable_bboxes(self):
+        """
+        Voxel bounding boxes as line plottable arrays.
+        """
+        return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
 
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
