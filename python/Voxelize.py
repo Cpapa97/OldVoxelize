@@ -120,7 +120,7 @@ class Voxels:
         """
         return (self.side_length**3) * len(self)
     
-    # Voxel mesh skin for Brendan:
+    # Voxel mesh skin:
     # - Perhaps I should just put a shrink wrap around the Mesh.
     # - Or I could just connect all the outer voxels (but actually translate them to the centroids,
     #  or even better the vertex centers at some point that doesn't mess up the convenience of the voxels)
