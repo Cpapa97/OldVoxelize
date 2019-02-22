@@ -124,11 +124,12 @@ class Voxels:
     # - Perhaps I should just put a shrink wrap around the Mesh.
     # - Or I could just connect all the outer voxels (but actually translate them to the centroids,
     #  or even better the vertex centers at some point that doesn't mess up the convenience of the voxels)
-    #  and then for every "square" I just very simply split it in two. Otherwise, the voxels that jut out and
-    #  wouldn't form squares would very simply form triangles naturally. Might have to figure out how to query
-    #  for corner adjacency instead of face-to-face though. Also I have to deal with single voxel lines that exist
-    #  because of say axons. Maybe just split every voxel's faces into a series of triangles (while not bothering with
-    #  connecting corner adjacent voxels) and remove all "non-visible" or outer triangles.
+    #  and then for every "square" I just very simply split it in two. The triangles on faces that have an edge
+    #  would then be deleted (or at that point I can simply not create triangles with them). Otherwise, the voxels
+    #  that jut out and wouldn't form squares would very simply form triangles naturally. Might have to figure out how
+    #  to query for corner adjacency instead of face-to-face though. Also I have to deal with single voxel lines that exist
+    #  because of say axons. Maybe just split every voxel's faces into a series of triangles (while not bothering with connecting
+    #  corner adjacent voxels) and remove all "non-visible" or outer triangles.
 
     @property
     def _rectangular_idx(self):
@@ -147,6 +148,15 @@ class Voxels:
         """
         return self.bboxes[:, np.arange(3), self._rectangular_idx.T].transpose(0, 2, 1)
     
+    def vbbox(self, offset):
+        voxel_min = self.origin + (offset * self.side_length)
+        voxel_max = voxel_min + self.side_length
+        return np.array((voxel_min, voxel_max)).T
+
+    def voxel_bbox(self, voxel_id):
+        offset = self.offsets[voxel_id]
+
+
     @staticmethod
     def get_edges(adjacency_array):
         """
