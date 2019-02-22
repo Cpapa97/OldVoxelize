@@ -136,6 +136,8 @@ class Voxels:
     #  because of say axons. Maybe just split every voxel's faces into a series of triangles (while not bothering with connecting
     #  corner adjacent voxels) and remove all "non-visible" or outer triangles.
     # In that case it might be helpful to use the bounding box of the vertices (if I'm unable to use the vertex centers of mass per voxel).
+    # Once the mesh is watertight and manifold, I should be able to do another quick passthrough to remove internal faces (like if there are pockets of air
+    # inside the mesh caused by 2 layers of faces).
 
     @property
     def _rectangular_idx(self):
