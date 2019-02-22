@@ -179,7 +179,7 @@ class Voxels:
         """
         return np.subtract(*self.offsets[edges].transpose(1, 2, 0)).T
 
-    def get_edge_vectors(self, edge_directions):
+    def get_edge_vectors(self, edges):
         """
         Returns the real-world vectors of the edges. Though should it be center to center? Yeah probably.
         """
