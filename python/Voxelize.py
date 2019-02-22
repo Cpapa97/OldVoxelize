@@ -130,6 +130,7 @@ class Voxels:
     #  to query for corner adjacency instead of face-to-face though. Also I have to deal with single voxel lines that exist
     #  because of say axons. Maybe just split every voxel's faces into a series of triangles (while not bothering with connecting
     #  corner adjacent voxels) and remove all "non-visible" or outer triangles.
+    # In that case it might be helpful to use the bounding box of the vertices (if I'm unable to use the vertex centers of mass per voxel).
 
     @property
     def _rectangular_idx(self):
@@ -155,7 +156,8 @@ class Voxels:
 
     def voxel_bbox(self, voxel_id):
         offset = self.offsets[voxel_id]
-
+        return self.vbbox(offset)
+    
 
     @staticmethod
     def get_edges(adjacency_array):
