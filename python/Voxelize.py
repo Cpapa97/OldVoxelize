@@ -169,6 +169,24 @@ class Voxels:
         raise NotImplementedError
 
     @property
+    def _cube_face_idx(self):
+        """
+        Used to convert a voxel bounding box to its 6 faces.
+        """
+        # Implemented this way to save on space.
+        return np.array([[0, 0, 1, 1,  0, 1, 1, 0,  0, 0, 0, 0,  1, 1, 1, 1,  0, 0, 1, 1,  0, 1, 1, 0],
+                         [0, 1, 1, 0,  0, 0, 0, 0,  0, 0, 1, 1,  0, 1, 1, 0,  1, 1, 1, 1,  0, 0, 1, 1],
+                         [0, 0, 0, 0,  0, 0, 1, 1,  0, 1, 1, 0,  0, 0, 1, 1,  0, 1, 1, 0,  1, 1, 1, 1]]).T.reshape(6, 4, 3)
+
+    # This could actually be a function that takes in whatever voxels wanted.
+    @property
+    def voxel_faces(self):
+        """
+        Faces of the voxel bounding boxes.
+        """
+        return self.bboxes[:, np.arange(3), self._cube_face_idx]
+
+    @property
     def _drawable_idx(self):
         """
         Used to convert a voxel bounding box to a line plottable feature in ipyvolume.
