@@ -166,7 +166,7 @@ class Voxels:
         """
         Returns the edge connections of an argument adjacency matrix.
         """
-        return np.array(np.nonzero(adjacency_array)).T
+        return np.argwhere(adjacency_array)
 
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
