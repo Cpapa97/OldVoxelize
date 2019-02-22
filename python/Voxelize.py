@@ -55,6 +55,8 @@ class Voxels:
         """
         return self.adjacency_masks.astype(np.uint8)
 
+    # Because this stuff has to rerun everything, maybe I should turn all of these into functions that also store these things as private variables?
+    # Would speed up re-use and keep the data integrity.
     @property
     def edges(self):
         """
