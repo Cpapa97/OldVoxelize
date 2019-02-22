@@ -16,6 +16,15 @@ import ipyvolume.pylab as p3
 
 # I need to implement something where I can query for a voxel, then get its real-coordinate bounding box
 # by passing the voxel index or the offset vectors themselves into a function. (Likely have both options).
+
+# Also might want to combine the VoxelMesh class and the Voxels class and just allow it to have options to have all or none of the vertices, triangles,
+# and voxels. Then if vertices are present I can produce per_voxel_vertices potentially... That might require another method to also catch the per_voxel_vertices
+# though.
+
+# However, combining the two classes would mean I would need a very clear denotation for when a property or function is related to the voxels
+# and not the mesh.
+
+# Also need to be able to import already made voxels still.
 class Voxels:
     def __init__(self, origin, side_length, offsets, per_voxel_vertices=None):
         """
@@ -111,6 +120,16 @@ class Voxels:
         """
         return (self.side_length**3) * len(self)
     
+    # Voxel mesh skin for Brendan:
+    # - Perhaps I should just put a shrink wrap around the Mesh.
+    # - Or I could just connect all the outer voxels (but actually translate them to the centroids,
+    #  or even better the vertex centers at some point that doesn't mess up the convenience of the voxels)
+    #  and then for every "square" I just very simply split it in two. Otherwise, the voxels that jut out and
+    #  wouldn't form squares would very simply form triangles naturally. Might have to figure out how to query
+    #  for corner adjacency instead of face-to-face though. Also I have to deal with single voxel lines that exist
+    #  because of say axons. Maybe just split every voxel's faces into a series of triangles (while not bothering with
+    #  connecting corner adjacent voxels) and remove all "non-visible" or outer triangles.
+
     @property
     def _rectangular_idx(self):
         """
