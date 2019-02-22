@@ -173,6 +173,18 @@ class Voxels:
         """
         return np.argwhere(adjacency_array)
 
+    def get_edge_directions(self, edges):
+        """
+        Returns the direction the edges are oriented in.
+        """
+        return np.subtract(*self.offsets[edges].transpose(1, 2, 0)).T
+
+    def get_edge_vectors(self, edge_directions):
+        """
+        Returns the real-world vectors of the edges. Though should it be center to center? Yeah probably.
+        """
+        raise NotImplementedError
+
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
 
