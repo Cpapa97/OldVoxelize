@@ -160,7 +160,7 @@ class Voxels:
         """
         Returns the direction the edges are oriented in.
         """
-        return np.subtract(*self.offsets[edges].transpose(1, 2, 0)).T
+        return np.subtract(*self.offsets[edges].transpose(1, 0, 2))
 
     def get_edge_vectors(self, edges):
         """
