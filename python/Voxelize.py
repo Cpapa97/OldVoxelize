@@ -29,7 +29,6 @@ class Voxels:
     def __init__(self, origin, side_length, offsets, per_voxel_vertices=None):
         """
         Voxel structure for storing and accessing the voxels and optionally the mesh vertices contained within them.
-
         :param origin: Starting point for which the voxel vectors will be offset from.
         :param side_length: Length of a single side of the stored cube voxels.
         :param offset: An array of (x, y, z) offsets from the origin that are calculated using the side length.
@@ -179,6 +178,17 @@ class Voxels:
         Returns the real-world vectors of the edges. Though should it be center to center? Yeah probably.
         """
         raise NotImplementedError
+    
+    @property
+    def _voxel_vertex_idx(self):
+        return np.array([[0, 0, 0],
+                         [1, 0, 0],
+                         [1, 1, 0],
+                         [0, 1, 0],
+                         [0, 0, 1],
+                         [1, 0, 1],
+                         [1, 1, 1],
+                         [0, 1, 1]])
 
     @property
     def _cube_face_idx(self):
