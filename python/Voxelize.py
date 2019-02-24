@@ -191,6 +191,13 @@ class Voxels:
                          [0, 1, 1]])
 
     @property
+    def offset_vertices(self):
+        """
+        Generates the vertices at the corner of each voxel in units of offset.
+        """
+        return np.array((self.offsets, self.offsets+1)).transpose(1, 2, 0)[:, np.arange(3), self._voxel_vertex_idx]
+
+    @property
     def _cube_face_idx(self):
         """
         Used to convert a voxel bounding box to its 6 faces.
