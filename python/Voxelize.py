@@ -41,15 +41,27 @@ class Voxels:
         self.per_voxel_vertices = per_voxel_vertices
 
     @property
+    def pairwise_differences(self):
+        """
+        Returns the difference between each offset and the rest of the offsets. There will be a difference array for every voxel offset.
+        """
+        return np.array([offset - self.offsets for offset in self.offsets])
+
+    @property
     def adjacency_masks(self):
         """
         Generates masks that are used in most of the adjacency/neighborhood generators.
         """
-        pairwise_differences = np.array([offset - self.offsets for offset in self.offsets])
-        return np.abs(pairwise_differences).sum(axis=2) == 1
+        return np.abs(self.pairwise_differences).sum(axis=2) == 1
 
+    # Corner adjacency might actually be very helpful in creating a skeleton.
+    # It would easily allow me to just connect every voxel by an edge to in the 3x3x3 space surrounding each one.
+    # I could likely find corner adjacency by using some metrics to see if the pairwise differences have an absolute value of (1, 1, 1)
+    # and those would be the corner adjacencies.
+    # If I do it that way I should also move pairwise_differences to its own property.
     @property
-    def adjacency(self):
+    def adjacency(self): # If I include corner adjacency I should have this property give face-to-face and corner-to-corner adjacency
+                         # and then have 2 more properties to return those separately.
         """
         Returns the face-face adjacency matrix of the voxels (based on the offset array). As of right now it only fills the upper triangle
         """
