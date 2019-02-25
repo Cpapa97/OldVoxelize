@@ -39,6 +39,7 @@ class Voxels:
         self.offsets = offsets
         self.per_voxel_vertices = per_voxel_vertices
 
+    # Can probably make this into a utility function instead. It is useful in other cases too.
     @property
     def pairwise_differences(self):
         """
@@ -196,6 +197,67 @@ class Voxels:
         Generates the vertices at the corner of each voxel in units of offset.
         """
         return np.array((self.offsets, self.offsets+1)).transpose(1, 2, 0)[:, np.arange(3), self._voxel_vertex_idx]
+
+    @property
+    def _offset_vertices_to_faces_idx(self):
+        """
+        Used for converting from the corner vertices of each voxel to faces.
+        """
+        return np.array([[0, 3, 2, 1],
+                         [0, 1, 5, 4],
+                         [0, 4, 7, 3],
+                         [1, 2, 6, 5],
+                         [3, 7, 6, 2],
+                         [4, 5, 6, 7]])
+
+    @property
+    def triangular_voxel_mesh(self):
+        """
+        Generates a triangular mesh from the visible faces of the voxels.
+        """
+        adj_mat = self.adjacency
+        edges = self.get_edges(np.tril(adj_mat))
+        edge_directions = self.get_edge_directions(edges)
+        offset_vertices = self.offset_vertices
+        unique_voxel_vertices, flat_inverse = np.unique(offset_vertices.reshape(-1, 3), axis=0, return_inverse=True)
+        new_voxel_vertices = self.origin + (unique_voxel_vertices * self.side_length)
+        vertices_inverse = flat_inverse.reshape(-1, 8)
+
+        offset_vertices_to_faces_idx = self._offset_vertices_to_faces_idx
+
+        remaining_faces = dict()
+        face_idx_master = np.arange(6)
+        for i, (direction, vertices) in enumerate(zip(edge_directions, offset_vertices)):
+            edge_idx = np.where(i == edges)
+            face_idx = face_idx_master.copy() # Faster to copy than to reinitialize using np.arange each time.
+            remove_face_idx = list()
+            for idx, direction in zip(edge_idx[1], edge_directions[edge_idx[0]]):
+                dir_idx = np.where(direction==1)[0].item()
+                if idx == 0:
+                    if dir_idx == 0:
+                        remove_face_idx.append(2)
+                    elif dir_idx == 1:
+                        remove_face_idx.append(1)
+                    elif dir_idx == 2:
+                        remove_face_idx.append(0)
+                elif idx == 1:
+                    if dir_idx == 0:
+                        remove_face_idx.append(3)
+                    elif dir_idx == 1:
+                        remove_face_idx.append(4)
+                    elif dir_idx == 2:
+                        remove_face_idx.append(5)
+            remaining_faces[i] = vertices_inverse[i][offset_vertices_to_faces_idx][np.delete(face_idx, remove_face_idx)]
+            
+        new_voxel_triangles = list()
+        for voxel_id, faces in remaining_faces.items():
+            if len(faces) > 0:
+                for face in faces:
+                    triangle1 = face[[0, 1, 2]]
+                    triangle2 = face[[2, 3, 0]]
+                    new_voxel_triangles.extend((triangle1, triangle2))
+        new_voxel_triangles = np.array(new_voxel_triangles)
+        return new_voxel_vertices, new_voxel_triangles
 
     @property
     def _cube_face_idx(self):
