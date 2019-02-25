@@ -1,10 +1,10 @@
 import numpy as np
 
-import pandas as pd # Might want this for pd.unique() at some point? Or for other uses, like the DataFrame for the voxels and to_dict replacement?
+# import pandas as pd # Might want this for pd.unique() at some point? Or for other uses, like the DataFrame for the voxels and to_dict replacement?
 
 # Might want the plotting capabilities to be a separate import-able or enable-able module
 # in case matplotlib or ipyvolume are not installed or in a jupyter notebook
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # Also should ensure that the plotting is not specific to a certain set of units (the divide by 1000 to go from nm to um)
 import ipyvolume.pylab as p3
 
