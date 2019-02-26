@@ -498,6 +498,7 @@ class VoxelMesh:
             except AttributeError:
                 raise AttributeError("This object does not have a Voxels object, you must initialize the voxel mesh with a Voxels object or run voxelize() to generate new voxels.")
     
+    # To deal with the cases of very small voxel sizes, I likely need to implement something to throw out large chunks of voxels as a quick preprocessing step before the main voxelization.
     def voxelize(self, side_length):
         def apply_split(vertices, edges, sort_axis):
             """
