@@ -43,7 +43,7 @@ class Voxels:
     @property
     def fast_edges(self):
         """
-        Returns the face-to-face edges from the voxel offsets. Does not require an adjacency matrix and so is far more memory efficient and faster than the other methods to extract edges from large arrays.
+        Returns the face-to-face edges from the voxel offsets. Does not require an adjacency matrix and so is far more memory efficient and faster than the other methods to extract edges from large arrays. It also happens to be far faster on small arrays too.
         """
         def discover_edges(offsets, column_index):
             edge_list = list()
