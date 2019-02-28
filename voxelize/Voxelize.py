@@ -40,16 +40,11 @@ class Voxels:
         self.offsets = offsets
         self.per_voxel_vertices = per_voxel_vertices
 
-    # Can probably make this into a utility function instead. It is useful in other cases too.
-    @property
-    def pairwise_differences(self):
-        """
-        Returns the difference between each offset and the rest of the offsets. There will be a difference array for every voxel offset.
-        """
-        return np.array([offset - self.offsets for offset in self.offsets])
-
     @property
     def fast_edges(self):
+        """
+        Returns the face-to-face edges from the voxel offsets. Does not require an adjacency matrix and so is far more memory efficient and faster than the other methods to extract edges from large arrays.
+        """
         def discover_edges(offsets, column_index):
             edge_list = list()
             column_offsets = offsets[:, column_index]
@@ -69,6 +64,14 @@ class Voxels:
         all_edges = np.vstack(edges)
         all_edges.sort()
         return np.unique(all_edges, axis=0)
+
+    # Can probably make this into a utility function instead. It is useful in other cases too.
+    @property
+    def pairwise_differences(self):
+        """
+        Returns the difference between each offset and the rest of the offsets. There will be a difference array for every voxel offset.
+        """
+        return np.array([offset - self.offsets for offset in self.offsets])
 
     @property
     def adjacency_masks(self):
