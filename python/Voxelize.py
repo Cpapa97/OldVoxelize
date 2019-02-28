@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.spatial.distance import cdist
 
 import pandas as pd # Might want this for pd.unique() at some point? Or for other uses, like the DataFrame for the voxels and to_dict replacement?
 
@@ -39,6 +40,28 @@ class Voxels:
         self.side_length = side_length
         self.offsets = offsets
         self.per_voxel_vertices = per_voxel_vertices
+
+    @property
+    def fast_edges(self):
+        def discover_edges(offsets, column_index):
+            edge_list = list()
+            column_offsets = offsets[:, column_index]
+            unique_column = np.unique(column_offsets)
+            for column_value in unique_column:
+                idx = np.nonzero(column_offsets==column_value)[0]
+                portion = offsets[idx]
+                pairwise_distances = cdist(portion, portion)
+                edges = idx[np.argwhere(pairwise_distances==1)]
+                edge_list.append(edges)
+            return np.vstack(edge_list)
+
+        edges = list()
+        offsets = self.offsets
+        for column_index in range(3):
+            edges.append(discover_edges(offsets, column_index))
+        all_edges = np.vstack(edges)
+        all_edges.sort()
+        return np.unique(all_edges, axis=0)
 
     @property
     def adjacency_masks(self):
