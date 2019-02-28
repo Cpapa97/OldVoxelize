@@ -11,5 +11,5 @@ setup(
     author='Christos Papadopoulos',
     author_email='cpapa97@gmail.com',
     packages=['voxelize'], #find_packages(exclude=[]), # I can't call the folder voxelize honestly. I use that word more than once.
-    install_requires=['numpy', 'ipyvolume']
+    install_requires=['numpy', 'scipy', 'ipyvolume']
 )
