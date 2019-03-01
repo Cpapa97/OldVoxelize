@@ -79,7 +79,7 @@ class Voxels:
 
         offset_vertices_to_faces_idx = self._offset_vertices_to_faces_idx
 
-        faces_to_remove = np.ones((offsets_vertices.shape[0], 6), np.uint8)
+        faces_to_remove = np.ones((offset_vertices.shape[0], 6), np.uint8)
         orientation = np.nonzero(edge_directions)[1]
         voxel_idx = np.hstack(edges)
         face_idx = np.hstack((-orientation, orientation+3))
