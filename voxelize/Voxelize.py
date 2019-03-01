@@ -563,9 +563,13 @@ class VoxelMesh:
                                 **kwargs)
             except AttributeError:
                 raise AttributeError("This object does not have a Voxels object, you must initialize the voxel mesh with a Voxels object or run voxelize() to generate new voxels.")
-    
+
     # To deal with the cases of very small voxel sizes, I likely need to implement something to throw out large chunks of voxels as a quick preprocessing step before the main voxelization.
     def voxelize(self, side_length):
+        """
+        Voxelization method that converts a cloud of vertices into cube voxels represented as an array of offsets that differ by a consistent length in the x, y, and z directions and start at an origin coordinate based on the minimum point of the mesh's bounding box.
+        :param side_length: Int or float argument that determines the distance between offsets (i.e. the length of the side of each cube voxel).
+        """
         def apply_split(vertices, edges, sort_axis):
             """
             :param vertices: The vertices to sort through and split.
