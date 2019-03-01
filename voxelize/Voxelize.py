@@ -65,6 +65,30 @@ class Voxels:
         all_edges.sort()
         return np.unique(all_edges, axis=0)
 
+    @property
+    def fast_triangular_voxel_mesh(self):
+        """
+        Fast triangular mesh recreation from the voxelization. The exact choices for which faces to remove needs to be fixed though (maybe change the self._offset_vertices_to_face_idx instead of this method).
+        """
+        edges = self.fast_edges
+        edge_directions = self.get_edge_directions(edges)
+        offset_vertices = self.offset_vertices
+        unique_voxel_vertices, flat_inverse = np.unique(offset_vertices.reshape(-1, 3), axis=0, return_inverse=True)
+        new_voxel_vertices = self.origin + (unique_voxel_vertices * self.side_length)
+        vertices_inverse = flat_inverse.reshape(-1, 8)
+
+        offset_vertices_to_faces_idx = self._offset_vertices_to_faces_idx
+
+        faces_to_remove = np.ones((offsets_vertices.shape[0], 6), np.uint8)
+        orientation = np.nonzero(edge_directions)[1]
+        voxel_idx = np.hstack(edges)
+        face_idx = np.hstack((-orientation, orientation+3))
+
+        faces_to_remove[voxel_idx, face_idx] = 0
+        remaining_faces = vertices_inverse[:, self._offset_vertices_to_faces_idx][faces_to_remove.astype(bool)]
+        new_voxel_triangles = remaining_faces[:, [[0, 1, 2], [2, 3, 0]]].reshape(-1, 3)
+        return new_voxel_vertices, new_voxel_triangles
+
     # Can probably make this into a utility function instead. It is useful in other cases too.
     @property
     def pairwise_differences(self):
