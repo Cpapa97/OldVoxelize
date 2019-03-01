@@ -567,17 +567,18 @@ class VoxelMesh:
     # To deal with the cases of very small voxel sizes, I likely need to implement something to throw out large chunks of voxels as a quick preprocessing step before the main voxelization.
     def voxelize(self, side_length, return_smallest_bboxes=False):
         """
-        Voxelization method that converts a cloud of vertices into cube voxels represented as an
-        array of offsets that differ by a consistent length in the x, y, and z directions and
-        starts at an origin coordinate based on the minimum point of the mesh's bounding box.
-        It also stores the vertices inside each voxel as a dictionary in the resulting Voxels object.
+        Voxelization method that converts a cloud of vertices into cube voxels represented as
+        an array of offsets that differ by a consistent length in the x, y, and z directions
+        and starts at an origin coordinate based on the minimum point of the mesh's bounding
+        box. It also stores the vertices inside each voxel as a dictionary in the resulting
+        Voxels object.
         :param side_length: Int or float argument that determines the distance between offsets
         (i.e. the length of the side of each cube voxel).
         :param return_smallest_bboxes: If set to True it will return the smallest bounding box
         that can be generated around the vertices within each voxel.
-        :return: If return_smallest_bboxes is set to True it returns (in addition to the side effects
-        of a Voxels object being generated and stored) a numpy.ndarray with shape (-1, 3, 2) of the
-        smallest bounding boxes around the vertices within each voxel.
+        :return: If return_smallest_bboxes is set to True it returns (in addition to the side
+        effects of a Voxels object being generated and stored) a numpy.ndarray with shape
+        (-1, 3, 2) of the smallest bounding boxes around the vertices within each voxel.
         """
         def apply_split(vertices, edges, sort_axis):
             """
