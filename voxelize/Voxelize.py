@@ -92,8 +92,9 @@ class Voxels:
         faces_to_keep[voxel_idx, face_idx] = 0
         remaining_faces = vertices_inverse[:, offset_vertices_to_faces_idx][faces_to_keep.astype(bool)]
         new_voxel_triangles = remaining_faces[:, [[0, 1, 2], [2, 3, 0]]].reshape(-1, 3)
+        new_voxel_triangles = self.full_stable_sort(new_voxel_triangles)
         return new_voxel_vertices, new_voxel_triangles
-
+    
     # Can probably make this into a utility function instead. It is useful in other cases too.
     @property
     def pairwise_differences(self):
@@ -205,7 +206,7 @@ class Voxels:
     # In that case it might be helpful to use the bounding box of the vertices (if I'm unable to use the vertex centers of mass per voxel).
     # Once the mesh is watertight and manifold, I should be able to do another quick passthrough to remove internal faces (like if there are pockets of air
     # inside the mesh caused by 2 layers of faces).
-    
+
     def vbbox(self, offset):
         voxel_min = self.origin + (offset * self.side_length)
         voxel_max = voxel_min + self.side_length
@@ -214,7 +215,17 @@ class Voxels:
     def voxel_bbox(self, voxel_id):
         offset = self.offsets[voxel_id]
         return self.vbbox(offset)
-    
+
+    @staticmethod
+    def full_stable_sort(array):
+        """
+        Preserves the order of the rows of the array when sorting.
+        """
+        a = array.copy()
+        a = a[a[:,2].argsort()] # First sort doesn't need to be stable. So it is faster to use the default quicksort.
+        a = a[a[:,1].argsort(kind='mergesort')]
+        a = a[a[:,0].argsort(kind='mergesort')]
+        return a
 
     @staticmethod
     def get_edges(adjacency_array):
