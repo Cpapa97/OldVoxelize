@@ -480,9 +480,9 @@ class VoxelMesh:
     @property
     def nonisolated_vertices(self):
         """
-        Uses the triangle data to remove isolated vertices. Does not preserve or fix triangle indices. That might be implemented later, it can take a few seconds to compute.
+        Uses the triangle data to remove isolated vertices. Does not preserve or fix triangle indices. That might be implemented later, though it would likely take a few extra seconds to compute.
         """
-        return self.vertices[self.triangles]
+        return self.vertices[np.unique(self.triangles)]
 
     @property
     def center_of_triangles(self):
@@ -632,7 +632,7 @@ class VoxelMesh:
 
         # Initialize and store the Voxels object.
         offset_vectors = np.array(offset_vectors)
-        self.voxels = Voxels(self.bbox[:,0], side_length, offset_vectors, voxel_vertices)
+        self.voxels = Voxels(bbox[:,0], side_length, offset_vectors, voxel_vertices)
 
         if return_smallest_bboxes:
             get_bbox = self.get_bbox
