@@ -77,15 +77,20 @@ class Voxels:
         new_voxel_vertices = self.origin + (unique_voxel_vertices * self.side_length)
         vertices_inverse = flat_inverse.reshape(-1, 8)
 
-        offset_vertices_to_faces_idx = self._offset_vertices_to_faces_idx
-
-        faces_to_remove = np.ones((offset_vertices.shape[0], 6), np.uint8)
+        faces_to_keep = np.ones((offset_vertices.shape[0], 6), np.uint8)
         orientation = np.nonzero(edge_directions)[1]
-        voxel_idx = np.hstack(edges)
-        face_idx = np.hstack((-orientation, orientation+3))
+        voxel_idx = np.hstack(edges.T)
+        face_idx = np.hstack((orientation, orientation+3))
 
-        faces_to_remove[voxel_idx, face_idx] = 0
-        remaining_faces = vertices_inverse[:, self._offset_vertices_to_faces_idx][faces_to_remove.astype(bool)]
+        offset_vertices_to_faces_idx = np.array([[1, 2, 6, 5],
+                                                [3, 7, 6, 2],
+                                                [4, 5, 6, 7],
+                                                [0, 4, 7, 3],
+                                                [0, 1, 5, 4],
+                                                [0, 3, 2, 1]])
+
+        faces_to_keep[voxel_idx, face_idx] = 0
+        remaining_faces = vertices_inverse[:, offset_vertices_to_faces_idx][faces_to_keep.astype(bool)]
         new_voxel_triangles = remaining_faces[:, [[0, 1, 2], [2, 3, 0]]].reshape(-1, 3)
         return new_voxel_vertices, new_voxel_triangles
 
