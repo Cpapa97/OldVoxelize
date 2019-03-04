@@ -521,6 +521,14 @@ class VoxelMesh:
             self._voxels = voxels
         else:
             raise TypeError("The voxels property only accepts a Voxels object.")
+    
+    # Possibly only a temporary method in this package.
+    @staticmethod
+    def triangle_edges(triangles):
+        """
+        Returns a very simple view of the edges of the input triangles. The array shape will always be (len(triangles)*3, 2).
+        """
+        return triangles[:, [0, 1, 1, 2, 2, 0]].reshape(-1, 2)
 
     @staticmethod
     def get_bbox(vertices):
