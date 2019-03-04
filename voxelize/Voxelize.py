@@ -37,7 +37,7 @@ class Voxels:
         """
         self.origin = origin
         self.side_length = side_length
-        self.offsets = offsets
+        self.offsets = offsets # Might want to rename to lattice_offsets because it is essentially based on an integer lattice (spaced by the side_length) based on the Cartesian Grid centered at origin.
         self.per_voxel_vertices = per_voxel_vertices
 
     @property
