@@ -526,6 +526,16 @@ class VoxelMesh:
     def get_bbox(vertices):
         return np.array([(np.min(axis), np.max(axis)) for axis in vertices.T])
 
+    @staticmethod
+    def remove_isolated_vertices(vertices, triangles):
+        """
+        Returns a vertices array without isolated vertices and a re-indexed triangles array.
+        """
+        
+        flat_unique_triangles, map_to_original_triangles = np.unique(triangles, return_inverse=True)
+        nonisolated_vertices, new_triangle_ordering = np.unique(vertices[flat_unique_triangles], return_inverse=True, axis=0)
+        return nonisolated_vertices, new_triangle_ordering[map_to_original_triangles].reshape(-1, 3)
+
     def plot(self, plot_mesh=True, plot_voxels=True, width=800, height=600, voxel_count_offset=0,
              voxel_limit=None, use_centroids_instead=False, scaling=1, mesh_color='red', **kwargs):
         """
