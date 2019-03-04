@@ -532,8 +532,8 @@ class VoxelMesh:
         Returns a vertices array without isolated vertices and a re-indexed triangles array.
         """
         
-        flat_unique_triangles, map_to_original_triangles = np.unique(triangles, return_inverse=True)
-        nonisolated_vertices, new_triangle_ordering = np.unique(vertices[flat_unique_triangles], return_inverse=True, axis=0)
+        unique_nodes, map_to_original_triangles = np.unique(triangles, return_inverse=True)
+        nonisolated_vertices, new_triangle_ordering = np.unique(vertices[unique_nodes], return_inverse=True, axis=0)
         return nonisolated_vertices, new_triangle_ordering[map_to_original_triangles].reshape(-1, 3)
 
     def plot(self, plot_mesh=True, plot_voxels=True, width=800, height=600, voxel_count_offset=0,
