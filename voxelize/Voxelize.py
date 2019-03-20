@@ -401,6 +401,8 @@ class Voxels:
                 kwargs['size'] = 0.5
             p3.scatter(*self.centroids[voxel_count_offset:n_voxels_to_plot].T*scaling, **kwargs)
         else:
+            voxel_count_offset *= 18
+            n_voxels_to_plot *= 18
             drawable_bboxes = self.drawable_bboxes[voxel_count_offset:n_voxels_to_plot]
             p3.plot(*drawable_bboxes.T*scaling, **kwargs)
                 
