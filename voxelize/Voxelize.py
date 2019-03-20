@@ -358,7 +358,11 @@ class Voxels:
         """
         Voxel bounding boxes as line plottable arrays.
         """
-        return self.bboxes[:, np.arange(3), self._drawable_idx.T].transpose(0, 2, 1)
+        separate_drawable_bboxes = self.bboxes[:, np.arange(3), self._drawable_idx.T].transpose(0, 2, 1)
+        fixed_drawables = np.concatenate(separate_drawable_bboxes.transpose(0, 2, 1))
+        nan_row = np.empty(3)
+        nan_row.fill(np.nan)
+        return np.insert(fixed_drawables, np.arange(0, len(fixed_drawables), 17), nan_row, axis=0)
 
     # I need to be able to extract the per voxel vertices from a mesh when I already have offsets imported from the database.
 
@@ -398,8 +402,8 @@ class Voxels:
             p3.scatter(*self.centroids[voxel_count_offset:n_voxels_to_plot].T*scaling, **kwargs)
         else:
             drawable_bboxes = self.drawable_bboxes[voxel_count_offset:n_voxels_to_plot]
-            for drawable_bbox in drawable_bboxes:
-                p3.plot(*drawable_bbox*scaling, **kwargs)
+            p3.plot(*drawable_bboxes*scaling, **kwargs)
+                
         p3.squarelim()
         p3.show()
     
