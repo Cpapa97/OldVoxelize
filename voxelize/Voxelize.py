@@ -68,7 +68,7 @@ class Voxels:
     @property
     def fast_triangular_voxel_mesh(self):
         """
-        Fast triangular mesh recreation from the voxelization. The exact choices for which faces to remove needs to be fixed though (maybe change the self._offset_vertices_to_face_idx instead of this method).
+        Fast triangular mesh recreation from the voxelization.
         """
         edges = self.fast_edges
         edge_directions = self.get_edge_directions(edges)
